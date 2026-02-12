@@ -1,0 +1,136 @@
+/* <weight>: Use a value from 100 to 900
+ <uniquifier>: Use a unique and descriptive class name */
+.raleway-myCustomFont {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+html{
+  font-size: 15px;
+  font-family: "Raleway", sans-serif;
+}
+
+body {
+  width: 600px;
+  margin: 0 auto;
+  background-color: #ff9500;
+  padding: 0 20px 20px 20px;
+  border: 5px solid black;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1 {
+  font-size: 60px;
+  text-align: center;
+}
+
+p, h1 {
+  color: red;
+  width: 500px;
+  border: 1px solid black;
+}
+
+li {
+  background-color: greenyellow;
+  border: 1px solid black;
+  margin-bottom: 5px;
+}
+
+ol li:first-child {
+  background-color: purple;
+  border: 1px solid black;
+  margin-bottom: 5px;
+}
+.highlight {
+  background-color: yellow;
+}
+
+span.bad {
+  color: white;
+  background-color : purple
+}
+
+h1.bad {
+  color : blue;
+  background-color: chocolate;
+  border: none;
+}
+span#spanX:hover {
+  color:rebeccapurple;
+  background-color: yellowgreen;
+}
+
+strong#span2 {
+  color:orange;
+  background-color: aliceblue;
+  border: 2px solid brown;
+}
+
+#span2 {
+  color:burlywood;
+  background-color: aqua;
+  border: 1px solid black;
+}
+
+h4, .list{
+  color: hsl(23, 100%, 75%);
+  background-color: darkcyan;
+  border: 3px dashed brown;
+  margin-bottom: 3px;
+}
+
+span#spanX {
+  color: white;
+  background-color: blue;
+}
+
+/* all children of ul will be applied tat style */
+ul *{
+  background-color: rgb(221, 84, 93);
+  text-shadow: 2px 4px 5px yellow ;
+  display: inline flow-root;
+}
+
+.forecast {
+  margin: 0;
+  padding: 0.3rem;
+  background-color: #eeeeee;
+}
+
+.forecast > h1,
+.day-forecast {
+  margin: 0.5rem;
+  padding: 0.3rem;
+  font-size: 1.2rem;
+  color: black;
+  border: none;
+  
+}
+
+.day-forecast {
+  background: right/contain content-box border-box no-repeat
+    url("/shared-assets/images/examples/rain.svg") white;
+}
+
+.day-forecast > h2,
+.day-forecast > p {
+  color: black;
+  margin: 0.2rem;
+  font-size: 1rem;
+  border: none;
+}
+
+.btn-wrapper{
+  display:flex;
+  justify-content:center;
+}
+.btn{
+  margin-left:10px;
+  margin-right:10px;
+}
