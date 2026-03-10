@@ -35,9 +35,11 @@ const requestLogger = (request, response, next) => {
 }
 
 const app = express()
+app.use(express.static('dist'))
 app.use(cors())
 app.use(express.json()) // for parsing application/json
 app.use(requestLogger)
+
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
