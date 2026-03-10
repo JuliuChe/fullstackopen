@@ -106,6 +106,7 @@ app.delete('/api/notes/:id', (request, response) =>{
 app.put('/api/notes/:id', (request, response) =>{
     const id=request.params.id
     const updatedNote = request.body
+    console.log(updatedNote)
     notes=notes.map(note => note.id==id?updatedNote:note)
     response.json(updatedNote)
 })
