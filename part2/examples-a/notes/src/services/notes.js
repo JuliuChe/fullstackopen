@@ -1,6 +1,6 @@
     
 import axios from 'axios'
-const baseUrl="http://localhost:3001/notes"
+const baseUrl="http://localhost:3001/api/notes"
 
 
 const getAll=() =>{
@@ -10,7 +10,7 @@ const getAll=() =>{
     content: 'This note is not saved to server',
     important: true,
   }
-  return request.then(response => response.data.concat(nonExisting))
+//   return request.then(response => response.data.concat(nonExisting))
     return axios.get(baseUrl).then(response => response.data)
 }
 

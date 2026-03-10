@@ -1,0 +1,18 @@
+
+
+###
+POST http://localhost:3001/api/persons/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jean Dujardin",
+    "number": "+41778977898"
+}
+
+
+###
+GET http://localhost:3001/api/persons/
+
+
+###
+DELETE http://localhost:3001/api/persons/6

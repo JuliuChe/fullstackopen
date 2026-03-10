@@ -1,0 +1,18 @@
+
+
+###
+POST http://localhost:3001/api/notes/ HTTP/1.1
+content-type: application/json
+
+{
+    "content": "Postman or REST request for VS Code are very good for testing",
+    "important": true
+}
+
+
+###
+GET http://localhost:3001/api/notes/
+
+
+###
+DELETE http://localhost:3001/api/notes/5
