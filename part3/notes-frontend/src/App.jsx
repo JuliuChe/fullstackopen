@@ -5,7 +5,16 @@ import Notification from './components/Notification'
 import Footer from './components/Footer'
 
 const App = () => {
-  const [notes, setNotes]=useState([])
+  const [notes, setNotes]=useState([    {
+        id: "1",
+        content: "HTML is easy",
+        important: true
+    },
+    {
+        id: "2",
+        content: "Browser can execute only JavaScript",
+        important: false
+    }])
   const [newNote, setNewNote] = useState(
     'a new note...'
   ) 
