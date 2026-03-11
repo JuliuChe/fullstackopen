@@ -16,3 +16,19 @@ GET http://localhost:3001/api/persons/
 
 ###
 DELETE http://localhost:3001/api/persons/6
+
+
+###
+POST http://phonebook-4a84.onrender.com/api/persons/ HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Jean Dujardin",
+    "number": "+41778977898"
+}
+
+###
+GET http://phonebook-4a84.onrender.com/api/persons/
+
+###
+DELETE http://phonebook-4a84.onrender.com/api/persons/8
