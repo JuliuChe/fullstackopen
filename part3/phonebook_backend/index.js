@@ -35,6 +35,7 @@ morgan.token('body', function getBody (req, resp) {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(express.json()) // for parsing application/json
+app.use(express.static('dist'))
 
 //Routes
 app.get('/api/persons', (request, response) => {
@@ -83,7 +84,7 @@ app.get('/info', (request, response) =>{
     const resp =`Phonebook has info for ${persons.length} people <br/><br/> ${now}`
     response.send(resp)
 })
-const PORT = 3001
+const PORT = 3002
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
