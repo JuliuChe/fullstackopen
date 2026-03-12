@@ -43,47 +43,58 @@ app.use(express.json()) // for parsing application/json
 app.use(express.static('dist'))
 
 //Routes
-app.get('/api/persons', (request, response) => {
-    Person.find({}).then(person => {
-        response.json(person)
-    })
+app.get('/api/persons', (request, response, next) => {
+    Person.find({})
+        .then(person => {
+            response.json(person)
+        })
+        .catch(err => next(err))
 })
 
-app.get('/api/persons/:id', (request, response) =>{
+app.get('/api/persons/:id', (request, response,next) =>{
     Person.findById(request.params.id)
     .then(person => {
         response.json(person)
     })
-    .catch( error =>{
-        response.statusMessage=`Person with id ${request.params.id} does not exist, error : ${error}`
-        response.status(404).end()
-    }) 
+    .catch( error => next(error)
+        // response.statusMessage=`Person with id ${request.params.id} does not exist, error : ${error}`
+        // response.status(404).end()
+    ) 
         
 })
 
-app.delete('/api/persons/:id', (request, response) =>{
+app.delete('/api/persons/:id', (request, response, next) =>{
     // const id = request.params.id
     // persons = persons.filter(p => p.id!==id)
     // response.status(204).end()
-    Person.deleteOne(new mongoose.Types.ObjectId(request.params.id)).then(count => {
-        console.log("count is ", count)
-        if (count.deletedCount===1){
-        response.json({"delete count":count})
-        } else {
-        response.status(404).end()
-        }
-    })
+
+    //with deleteOne
+    // Person.deleteOne(new mongoose.Types.ObjectId(request.params.id)).then(count => {
+    //     console.log("count is ", count)
+    //     if (count.deletedCount===1){
+    //     response.json({"delete count":count})
+    //     } else {
+    //     response.status(404).end()
+    //     }
+    // })
+    Person.findByIdAndDelete(request.params.id)
+        .then(result =>{
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 const generateId=()=>{
     const maxId=persons.length>0?Math.max(...persons.map(p => Number(p.id))):0
     return String(maxId+1)
 }
-app.post('/api/persons', (request, response) =>{
+app.post('/api/persons', (request, response, next) =>{
     const body = request.body
 
     if(!body.name || !body.number){
-        return response.status(400).json({error:'Name or number misssing'})
+        const error = new Error('Name or number missing')
+        error.status = 400
+        return next(error)
     }
     // const alreadyExist=persons.find(person => person.name.toLowerCase()==body.name.toLowerCase())
     // if(alreadyExist){
@@ -92,16 +103,57 @@ app.post('/api/persons', (request, response) =>{
     //console.log(body)
 
     const person = new Person({...body})
-    person.save().then( saveNote => {
+    person.save()
+        .then( saveNote => {
             response.json(person)
-    })
+        })
+        .catch(error => next(error))
 })
 
-app.get('/info', (request, response) =>{
-    const now = new Date()
-    const resp =`Phonebook has info for ${persons.length} people <br/><br/> ${now}`
-    response.send(resp)
+app.put('/api/persons/:id', (request, response, next) => {
+    const {name, number}=request.body
+    Person.findById(request.params.id)
+        .then((person) =>{
+            if(!person){
+                return response.status(404).end()
+            }
+            person.name=name
+            person.number=number
+
+            return person.save().then((updatedPerson) => {
+                response.json(updatedPerson)
+            })
+        })
+        .catch(err => next(err))
 })
+
+app.get('/info', (request, response, next) =>{
+    const now = new Date()
+    Person.countDocuments({})
+        .then(count => {
+            const resp =`Phonebook has info for ${count} people <br/><br/> ${now}`
+            response.send(resp)
+        })
+        .catch(err => next(err))
+    // const resp =`Phonebook has info for ${persons.length} people <br/><br/> ${now}`
+    // response.send(resp)
+})
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+  if(error.name === "CastError"){
+    return response.status(400).send({error:'malformatted id'})
+  }
+}
+app.use(errorHandler)
+
+
+//Start server
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)

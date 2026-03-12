@@ -17,7 +17,18 @@ GET http://localhost:3001/api/persons/
 GET http://localhost:3001/api/persons/69b295dcaabc42aebdda2ae4
 
 ###
-DELETE http://localhost:3001/api/persons/69b2960ec2f88c096af344f7
+DELETE http://localhost:3001/api/persons/69b2d0cedba1362b318469c9
+
+###
+PUT http://localhost:3001/api/persons/69b295dcaabc42aebdda2ae4 HTTP/1.1
+Content-Type: application/json
+
+  {
+    "name": "Jean Dujardin",
+    "number": "+33778977898",
+    "id": "69b295dcaabc42aebdda2ae4"
+  }
+
 
 
 ###
