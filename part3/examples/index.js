@@ -1,30 +1,33 @@
 
-
+require('dotenv').config()
 const express = require('express')
 // const cors=require('cors')
+const mongoose = require('mongoose')
 
-let notes = [
-    {
-        id: "1",
-        content: "HTML is easy",
-        important: true
-    },
-    {
-        id: "2",
-        content: "Browser can execute only JavaScript",
-        important: false
-    },
-    {
-        id: "3",
-        content: "GET and POST are the most important methods of HTTP protocol",
-        important: true
-    },
-    {
-        id: "4",
-        content: "PUT, PATCH and DELETE are secondary methods of HTTP protocol",
-        important: true
-    }
-]
+const Note = require('./models/note')
+
+// let notes = [
+//     {
+//         id: "1",
+//         content: "HTML is easy",
+//         important: true
+//     },
+//     {
+//         id: "2",
+//         content: "Browser can execute only JavaScript",
+//         important: false
+//     },
+//     {
+//         id: "3",
+//         content: "GET and POST are the most important methods of HTTP protocol",
+//         important: true
+//     },
+//     {
+//         id: "4",
+//         content: "PUT, PATCH and DELETE are secondary methods of HTTP protocol",
+//         important: true
+//     }
+// ]
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -46,20 +49,24 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+      Note.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 app.get('/api/notes/:id', (request, response) => {
     console.log(request.baseUrl)
-    const id = request.params.id
-    const note=notes.find(note => note.id === id)
-    if (note){
+    // const id = request.params.id
+    // const note=notes.find(note => note.id === id)
+    // if (note){
+    //     response.json(note)
+    // } else {
+    //     response.statusMessage = `Note with id ${id} does not exist`
+    //     response.status(404).end()
+    // }
+    Note.findById(request.params.id).then(note => {
         response.json(note)
-    } else {
-        response.statusMessage = `Note with id ${id} does not exist`
-        response.status(404).end()
-    }
-    
+    })
 })
 
 const generateId = () => {
@@ -86,29 +93,50 @@ app.post('/api/notes', (request, response) => {
         return response.status(400).json({error:'content misssing'})
     }
 
-    const note = {
+    // const note = {
+    //     content: body.content,
+    //     important: body.important || false,
+    //     id: generateId(),
+    // }
+    // notes = notes.concat(note)
+    // response.json(note)
+    const note = new Note ({
         content: body.content,
         important: body.important || false,
-        id: generateId(),
-    }
-
-    notes = notes.concat(note)
-
-    response.json(note)
     })
 
-app.delete('/api/notes/:id', (request, response) =>{
-    const id = request.params.id
-    notes = notes.filter(note => note.id!==id)
-    response.status(204).end()
+    note.save().then(saveNote =>{
+            response.json(note)
+    })
 })
 
-app.put('/api/notes/:id', (request, response) =>{
-    const id=request.params.id
-    const updatedNote = request.body
-    console.log(updatedNote)
-    notes=notes.map(note => note.id==id?updatedNote:note)
-    response.json(updatedNote)
+app.delete('/api/notes/:id', (request, response) =>{
+    // const id = request.params.id
+    // notes = notes.filter(note => note.id!==id)
+    // response.status(204).end()
+    Note.deleteOne({_id:request.params.id}).then(count => {
+      console.log("count is ", count)
+      if (count.deletedCount===1){
+        response.json({"delete count":count})
+      } else {
+        response.status(404).end()
+      }
+    })
+
+})
+
+app.put('/api/notes/:id', async (request, response) =>{
+    // const id=request.params.id
+    // const updatedNote = request.body
+    // console.log(updatedNote)
+    // notes=notes.map(note => note.id==id?updatedNote:note)
+    // response.json(updatedNote)
+    const _id = new mongoose.Types.ObjectId(request.params.id);
+    const filter = {content:request.body.content, important:request.body.important}
+    const update = {important:request.body.important}
+    const doc = await Note.findOneAndUpdate(_id, update,{returnDocument:'after'})
+    console.log(doc)
+    response.json(doc)
 })
 
 const unknownEndpoint = (request, response) => {
@@ -117,7 +145,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

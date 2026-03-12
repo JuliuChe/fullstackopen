@@ -1,10 +1,13 @@
 const RenderAllPeople=({filter, persons, okDeleteHandler}) =>{
-
-  return( <ul>
-         {persons
-          .filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
-          .map((person)=> <RenderPerson key={person.id} person={person} deleteHandler={()=>okDeleteHandler(person.id, person.name)}/> )}
-        </ul>)
+  if (persons){
+    return( <ul>
+          {persons
+            .filter((person) => person.name.toLowerCase().includes(filter.toLowerCase()))
+            .map((person)=> <RenderPerson key={person.id} person={person} deleteHandler={()=>okDeleteHandler(person.id, person.name)}/> )}
+          </ul>)
+  } else {
+    return <ul></ul>
+  }
 }
 
 const RenderPerson=({person, deleteHandler}) => {
