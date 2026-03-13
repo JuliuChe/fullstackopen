@@ -53,7 +53,17 @@ const App = () => {
             setTimeout(() => {
               setNotification({...notification, message:null})
               }, 5000)
-          }) 
+          })
+        .catch(error => {
+          console.log(error.response.data.error)
+          setNotification(
+             {message:error.response.data.error, type:'error'}
+            )
+          setTimeout(() => {
+            setNotification({...notification, message:null})
+          }, 5000)
+
+        }) 
 
       setNewName("")
       setNewNumber("")
@@ -77,8 +87,8 @@ const App = () => {
                 setPersons(persons.map((person) => person.id===id?updatedEntry:person))
             })
             .catch(error => {
-              setNotification({message:`Information of ${newNamePrep} has already been removed from server`, type:'error'})
-              setPersons(persons.filter((person) => person.id!==id))
+              setNotification({message:error.response.data.error, type:'error'})
+              // setPersons(persons.filter((person) => person.id!==id))
               setTimeout(() => {
                 setNotification({...notification, message:null})
                 }, 5000)
