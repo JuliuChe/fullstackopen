@@ -5,7 +5,7 @@ POST http://localhost:3001/api/notes/ HTTP/1.1
 content-type: application/json
 
 {
-    "content": "Postman or REST request for VS Code are very good for testing",
+    "content": "Post",
     "important": true
 }
 
