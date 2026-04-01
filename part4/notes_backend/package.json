@@ -1,0 +1,35 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "example from the course",
+  "license": "MIT",
+  "author": "Julien Chevalley",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node --watch index.js",
+    "chrome-dev": "node --inspect index.js",
+    "build:ui": "rm -rf dist && cd ../notes_frontend && npm run build && cp -r dist ../examples && cd ../examples",
+    "deploy:full": "npm run build:ui && git add . && git commit -m  \"${npm_config_message:-uibuild}\" && git push",
+    "test": "cross-env NODE_ENV=test node --test",
+    "test:only": "cross-env NODE_ENV=test node --test --test-only",
+    "test:name": "cross-env NODE_ENV=test node --test --test-name-pattern"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0",
+    "supertest": "^7.2.2"
+  }
+}

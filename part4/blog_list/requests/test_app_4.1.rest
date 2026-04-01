@@ -1,0 +1,36 @@
+
+###
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9pem8iLCJpZCI6IjY5Y2QxMjlkNThkN2E2YmFhYzAyYjIzOSIsImlhdCI6MTc3NTA0OTk1OH0.MY5nAUUED4Xsf-KwK0RAbg9uoClNiUiggsa3_6bu1k0
+
+{
+    "title": "Out-of-space",
+    "author": "Prodigy",
+    "url":"http://prodigy_out_of_space.com",
+    "likes":5000
+}
+
+
+###
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpEb3JlIiwiaWQiOiI2OWNkMjE5ZDk0MDUyZGRhMTZjYjQ4NDkiLCJpYXQiOjE3NzUwNTEyNDN9.JU_RJRdMDSKrjutWXZRsxYpXbSLI8DVdJSsHpa4906Y
+
+{
+    "title": "Le Lac",
+    "author": "Julien Doré",
+    "url":"http://julien-dore-lac.com",
+    "likes":2
+}
+
+
+###
+GET http://localhost:3003/api/blogs/
+
+###
+GET http://localhost:3003/api/users/
+
+###
+DELETE http://localhost:3003/api/blogs/69cd353e83653299d3b588dd HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpEb3JlIiwiaWQiOiI2OWNkMjE5ZDk0MDUyZGRhMTZjYjQ4NDkiLCJpYXQiOjE3NzUwNTEyNDN9.JU_RJRdMDSKrjutWXZRsxYpXbSLI8DVdJSsHpa4906Y
