@@ -1,0 +1,30 @@
+
+
+###
+POST http://localhost:3001/api/notes/ HTTP/1.1
+content-type: application/json
+
+{
+    "content": "It is a big user",
+    "important": true,
+    "userId": "69cb6335a25b88437fbfb914"
+}
+
+
+###
+GET http://localhost:3001/api/notes/
+
+
+
+###
+PUT http://localhost:3001/api/notes/69b28276f9bb2c02107150b3 HTTP/1.1
+content-type: application/json
+
+{
+    "content": "Postman or REST request for VS Code are very good for testing",
+    "important":false
+}
+
+
+###
+DELETE http://localhost:3001/api/notes/69b28276f9bb2c02107150b3
