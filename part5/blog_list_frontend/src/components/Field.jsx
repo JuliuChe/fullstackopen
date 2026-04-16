@@ -1,20 +1,20 @@
 
-const Field = ({ name, value, onChange }) => {
+const Field = ({ name, value, type='text', onChange }) => {
   if (name === null) {
     return null
   }
 
   return (
-      <div>
-        <label>
+    <div>
+      <label>
         {name}
-          <input
-          type={name}
+        <input
+          type={type}
           value={value}
           onChange={onChange}
-          />
-        </label>
-      </div>
+        />
+      </label>
+    </div>
   )
 }
 

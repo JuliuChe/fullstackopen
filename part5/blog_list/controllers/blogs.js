@@ -39,11 +39,14 @@ blogsRouter.post('/', async (request, response) => {
     user:user.id
   })
 
-  const savedBlog = await blog.save()
-  user.blogs = user.blogs.concat(savedBlog.id)
+
+  user.blogs = user.blogs.concat(blog.id)
   await user.save()
 
-  response.status(201).json(savedBlog)
+  const savedBlog = await blog.save()
+  const populatedBlog = await savedBlog.populate('user',{ username :1, name:1 })
+  console.log(populatedBlog)
+  response.status(201).json(populatedBlog)
 
 })
 
@@ -58,6 +61,7 @@ blogsRouter.delete('/:id', async (request, response) => {
   }
 
   if (!blog.user || blog.user.toString() !== request.user) {
+    console.log(blog.user, blog.user.toString(), request.user)
     return response.status(403).json({ error: 'forbidden' })
   }
 
@@ -71,14 +75,16 @@ blogsRouter.put('/:id', async (request, response) => {
     response.status(404).end()
   }
 
-  const { title, author, url, likes } = request.body
+  const { title, author, url, likes, user } = request.body
 
   if (title) { blogToUpdate.title = title }
   if (author) { blogToUpdate.author = author }
   if (url) { blogToUpdate.url = url }
   if (likes) { blogToUpdate.likes = likes }
+  if (user) {  blogToUpdate.user = user }
   const updatedBlog = await blogToUpdate.save()
-  response.status(200).json(updatedBlog)
+  const blog = await Blog.findById(updatedBlog.id).populate('user',{ username :1, name:1 })
+  response.status(200).json(blog)
 })
 
 module.exports = blogsRouter

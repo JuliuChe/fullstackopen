@@ -5,10 +5,10 @@ content-type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9pem8iLCJpZCI6IjY5Y2QxMjlkNThkN2E2YmFhYzAyYjIzOSIsImlhdCI6MTc3NTA0OTk1OH0.MY5nAUUED4Xsf-KwK0RAbg9uoClNiUiggsa3_6bu1k0
 
 {
-    "title": "Out-of-space",
-    "author": "Prodigy",
-    "url":"http://prodigy_out_of_space.com",
-    "likes":5000
+    "title": "Welcome to saint-tropez",
+    "author": "Rich bitch",
+    "url":"http://dollarsdollarsdollars.com",
+    "likes":1000000
 }
 
 
