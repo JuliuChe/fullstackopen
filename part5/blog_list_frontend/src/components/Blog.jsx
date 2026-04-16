@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { Link, useNavigate } from 'react-router-dom'
+
 const Blog = ({ blog, handleLike, handleRemove }) => {
   const blogStyle = {
     paddingTop: 10,
@@ -15,6 +17,11 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
   const toggleDetails = () => {
     setDetails(!details)
   }
+  const navigate = useNavigate()
+  const onRemove = (id) => {
+    handleRemove(id)
+    navigate('/')
+   }
 
   const currentUser = () => {
     const loggedUsrJson = window.localStorage.getItem('loggedBlogappUser')
@@ -22,23 +29,17 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
   }
 
   const addRemoveBtn = (blog, currentUser, handleRemove) => {
-    return currentUser === blog.user.username ? <> <button type="button" onClick={() => handleRemove(blog.id)}>remove</button><br/></> :null
+    return currentUser === blog.user.username ? <> <button type="button" onClick={() => onRemove(blog.id)}>remove</button><br/></> :null
   }
 
   return (
     <div>
-      <div style={{ ...blogStyle, ...highlightVisible }} className='highlights'>
+      <div style={{ ...blogStyle}} className='details'>
         <div>
-          <span data-testid="title_base">{blog.title}</span> by <span data-testid="author_base">{blog.author}</span>
-          <button type="button" onClick={toggleDetails}>view</button>
-        </div>
-      </div>
-      <div style={{ ...blogStyle, ...detailVisible }} className='details'>
-        <div>
-          <span data-testid="title_det">{blog.title}</span><span data-testid="author_det">{blog.author}</span>
-          <button type="button" onClick={toggleDetails}>hide</button><br/>
-          <span data-testid="url">{blog.url}</span><br/>
-          <span data-testid="likes"> {blog.likes} </span><button type="button" onClick={ () => handleLike(blog)}>like</button><br/>
+          <h3> <span data-testid="title_det">{blog.title}</span> by <span data-testid="author_det">{blog.author}</span> </h3>
+          <span data-testid="url"><Link to={`${blog.url}`}>{blog.url}</Link></span><br/>
+          <span data-testid="likes"> {blog.likes} </span>
+          {currentUser()?<button type="button" onClick={ () => handleLike(blog)}>like</button> : <>likes</>}<br/>
           {blog.user.name}<br />
           {addRemoveBtn(blog, currentUser(), handleRemove)}
         </div>
@@ -47,5 +48,13 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
     </div>
   )
 }
+
+          // <button type="button" onClick={toggleDetails}>hide</button><br/>
+      // <div style={{ ...blogStyle, ...highlightVisible }} className='highlights'>
+      //   <div>
+      //     <span data-testid="title_base">{blog.title}</span> by <span data-testid="author_base">{blog.author}</span>
+      //     <button type="button" onClick={toggleDetails}>view</button>
+      //   </div>
+      // </div>
 
 export default Blog

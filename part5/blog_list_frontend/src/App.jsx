@@ -8,6 +8,9 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
+
+import BlogList from './components/BlogList'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -16,7 +19,10 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
   })
-
+  const match = useMatch('/blogs/:id')
+  const blog = match
+    ? blogs.find(blog => blog.id === match.params.id)
+    : null
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -38,6 +44,7 @@ const App = () => {
       setUser(user)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       console.log(user)
+
     } catch {
       setNotification({ message: 'Wrong login credentials', type: 'error' })
       setTimeout(() => { setNotification({ ...notification, message:null }) }, 5000)
@@ -46,7 +53,8 @@ const App = () => {
 
   const handleNewBlog = async (newBlog ) => {
     try {
-      blogFormRef.current.toggleVisibility()
+      // blogFormRef.current.toggleVisibility()
+      console.log(newBlog)
       const blog = await blogService.create(newBlog)
       setBlogs(blogs.concat(blog))
       setNotification({ message: `a new blog ${blog.title} by ${blog.author} added`, type:'info' })
@@ -81,32 +89,32 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <LoginForm handler={handleLogin} />
-  )
 
-  const blogFormRef = useRef()
-  const blogsList = () => (
-    <div>
-      <h2>blogs</h2>
-      <p>logged in as {user.name}
-        <button onClick={() => { setUser(null); window.localStorage.removeItem('loggedBlogappUser')}}>logout</button>
-      </p>
-      <Togglable buttonLabel='create new blog' ref={ blogFormRef }>
-        <BlogForm createBlog={handleNewBlog} />
-      </Togglable>
+  // const blogFormRef = useRef()
 
-      {[...blogs].sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemove={handleRemove} />
-      )}
-    </div>
-  )
+  const padding = {
+    padding: 5
+  }
+
 
   return (
     <div>
-      <Notification message={notification.message} type={notification.type} />
-      {!user && loginForm()}
-      {user && blogsList()}
+      <div>
+        <Notification message={notification.message} type={notification.type} />
+        <Link style={padding} to="/">blogs</Link>
+        {user ? <Link style={padding} to="/create">new blog</Link> : <></>}
+        { user ? <button onClick={ () => { setUser(null); window.localStorage.removeItem('loggedBlogappUser')}}>logout</button> : <Link style={padding} to="/login">login</Link> }
+      </div>
+      <Routes>
+        <Route path="/blogs/:id" element={
+          <Blog blog={blog} handleLike={handleLike} handleRemove={handleRemove} />
+        } />
+        <Route path="/login" element={
+          <LoginForm handler={handleLogin} />
+        } />
+        <Route path="/create" element={<BlogForm createBlog={ handleNewBlog } /> }/>
+        <Route path="/" element={<BlogList blogs={ blogs } />} />
+      </Routes>
     </div>
   )
 }

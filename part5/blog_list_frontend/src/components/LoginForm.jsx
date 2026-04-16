@@ -1,14 +1,18 @@
 import { useState } from 'react'
 import Field from './Field'
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = ({ handler }) => {
   const [username, setUsername] = useState([])
   const [password, setPassword] = useState([])
-  const submitForm = (event) => {
+  const navigate=useNavigate()
+
+  const submitForm = async (event) => {
     event.preventDefault()
-    handler(username, password)
+    await handler(username, password)
     setUsername('')
     setPassword('')
+    navigate('/')
   }
   return (
     <form onSubmit={submitForm} aria-label="login form">
