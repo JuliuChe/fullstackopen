@@ -1,49 +1,16 @@
-import { useState, useEffect } from 'react'
-import { Note } from './Note'
-import Notification from './Notification'
+import { useState } from 'react'
 import LoginForm from './LoginForm'
-
 import Toggable from './Toggable'
-import loginService from '../services/login'
-import noteService from '../services/notes'
 
 import { Link } from 'react-router-dom'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
 
-const NoteList = ({ notes }) => {
+const NoteList = ({ notes, user, onLogin, onLogout }) => {
 
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [user, setUser] = useState(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
-    return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
-  })
-
-
-  useEffect(() => {
-    if (user?.token) {
-      noteService.setToken(user.token)
-    }
-  }, [user])
 
   console.log('render', notes.length, 'notes')
 
-
-
-
-  const handleLogin = async (username, pwd) => {
-    try {
-      const user = await loginService.login({ username, password:pwd })
-      window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
-      )
-      setUser(user)
-    } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-  }
 
   const notesToShow = showAll ? notes : notes.filter((note) => note.important === true)
 
@@ -51,23 +18,20 @@ const NoteList = ({ notes }) => {
     return (
       <Toggable buttonLabel='log in'>
         <LoginForm
-          handleSubmit={handleLogin}
+          handleSubmit={onLogin}
         />
       </Toggable>
     )
   }
 
 
-  console.log(notesToShow)
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
-
       {!user && loginForm()}
       {user && (
         <div>
-          <p>{user.name} logged in</p>
+          <button onClick={onLogout}>logout</button>
         </div>
       )}
 
@@ -76,13 +40,34 @@ const NoteList = ({ notes }) => {
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <ul>
-        {notesToShow.map((note) => (
-          <li key={note.id}>
-            <Link to={`/notes/${note.id}`}>{note.content} </Link>
-          </li>)
-        )}
-      </ul>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>content</TableCell>
+              <TableCell>user</TableCell>
+              <TableCell>important</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {notesToShow.map((note) => (
+              <TableRow key={note.id}>
+                <TableCell>
+                  <Link to={`/notes/${note.id}`}>
+                    {note.content}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {note.user.name}
+                </TableCell>
+                <TableCell>
+                  {note.important?'true':'false'}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
   /* {notesToShow.map((note) =>
