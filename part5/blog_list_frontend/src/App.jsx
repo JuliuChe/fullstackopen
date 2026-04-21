@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Field from './components/Field'
@@ -58,10 +58,10 @@ const App = () => {
       const blog = await blogService.create(newBlog)
       setBlogs(blogs.concat(blog))
       setNotification({ message: `a new blog ${blog.title} by ${blog.author} added`, type:'info' })
-      setTimeout(() => { setNotification({ ...notification, message:null }) }, 5000)
+      setTimeout(() => { setNotification(prev => ({ ...prev, message:null })) }, 5000)
     } catch {
       setNotification({ message: 'Could not add new blog', type: 'error' })
-      setTimeout(() => { setNotification({ ...notification, message:null }) }, 5000)
+      setTimeout(() => { setNotification(prev => ({ ...prev, message:null })) }, 5000)
     }
   }
 
@@ -113,7 +113,7 @@ const App = () => {
           <LoginForm handler={handleLogin} />
         } />
         <Route path="/create" element={<BlogForm createBlog={ handleNewBlog } /> }/>
-        <Route path="/" element={<BlogList blogs={ blogs } />} />
+        <Route path="/" element={<BlogList blogs={ blogs } user = {user} />} />
       </Routes>
     </div>
   )
