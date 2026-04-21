@@ -120,7 +120,7 @@ const App = () => {
     }
   }
 
-const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
+  const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
   return (
     <Container>
       <AppBar position="static">
