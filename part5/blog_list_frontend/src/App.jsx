@@ -9,12 +9,13 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { Routes, Route, Link, useMatch } from 'react-router-dom'
+import { Container, Toolbar, AppBar, Button, Box } from '@mui/material'
 
 import BlogList from './components/BlogList'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification]=useState({ message:null, type:'info' })
+  const [notification, setNotification] = useState({ message: null, type: 'info' })
   const [user, setUser] = useState(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
@@ -26,13 +27,13 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )
   }, [])
 
   useEffect(() => {
     if (user?.token) {
-      console.log('Adding token for '+ user.name)
+      console.log('Adding token for ' + user.name)
       blogService.setToken(user.token)
     }
   }, [user])
@@ -47,28 +48,28 @@ const App = () => {
 
     } catch {
       setNotification({ message: 'Wrong login credentials', type: 'error' })
-      setTimeout(() => { setNotification({ ...notification, message:null }) }, 5000)
+      setTimeout(() => { setNotification({ ...notification, message: null }) }, 5000)
     }
   }
 
-  const handleNewBlog = async (newBlog ) => {
+  const handleNewBlog = async (newBlog) => {
     try {
       // blogFormRef.current.toggleVisibility()
       console.log(newBlog)
       const blog = await blogService.create(newBlog)
       setBlogs(blogs.concat(blog))
-      setNotification({ message: `a new blog ${blog.title} by ${blog.author} added`, type:'info' })
-      setTimeout(() => { setNotification(prev => ({ ...prev, message:null })) }, 5000)
+      setNotification({ message: `a new blog ${blog.title} by ${blog.author} added`, type: 'success' })
+      setTimeout(() => { setNotification(prev => ({ ...prev, message: null })) }, 5000)
     } catch {
       setNotification({ message: 'Could not add new blog', type: 'error' })
-      setTimeout(() => { setNotification(prev => ({ ...prev, message:null })) }, 5000)
+      setTimeout(() => { setNotification(prev => ({ ...prev, message: null })) }, 5000)
     }
   }
 
   const handleLike = async (blogToUpdate) => {
-    const { id, ...updatedBlog } = { ...blogToUpdate, likes:blogToUpdate.likes+1,user:blogToUpdate.user.id }
+    const { id, ...updatedBlog } = { ...blogToUpdate, likes: blogToUpdate.likes + 1, user: blogToUpdate.user.id }
     const response = await blogService.updateBlog(id, updatedBlog)
-    setBlogs(blogs.map(blog => blog.id === id ? response:blog))
+    setBlogs(blogs.map(blog => blog.id === id ? response : blog))
   }
 
   const handleRemove = async (blogId) => {
@@ -80,11 +81,11 @@ const App = () => {
         const response = await blogService.deleteBlog(blogId)
         console.log(response)
         setBlogs(blogs.filter(b => b.id !== blogId))
-        setNotification({ message: `Blog ${blog.title} ${blog.author} successfully deleted from DB`, type: 'info' })
-        setTimeout(() => { setNotification({ ...notification, message:null }) }, 5000)
+        setNotification({ message: `Blog ${blog.title} ${blog.author} successfully deleted from DB`, type: 'success' })
+        setTimeout(() => { setNotification({ ...notification, message: null }) }, 5000)
       } catch {
         setNotification({ message: `Could not delete blog with id : ${blogId}`, type: 'error' })
-        setTimeout(() => { setNotification({ ...notification, message:null }) }, 5000)
+        setTimeout(() => { setNotification({ ...notification, message: null }) }, 5000)
       }
     }
   }
@@ -92,18 +93,34 @@ const App = () => {
 
   // const blogFormRef = useRef()
 
-  const padding = {
-    padding: 5
+  const style = { fontWeight: 'medium', fontSize:'0.95rem' }
+  const toolbar = {
+    display: 'flex',
+    flexDirection: 'row-reverse'
   }
 
-
   return (
-    <div>
+    <Container>
+      <AppBar position="static" sx={style}>
+        <Toolbar sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between'
+        }}>
+          <Button color="inherit" component={Link} size="large" sx={{ fontSize: '1.5rem', fontWeight: 'medium', textTransform: 'none' }} to="/">Blog App</Button>
+          <Box color="inherit" sx={toolbar}>
+            {user ? <Button
+              color="inherit"
+              sx={style}
+              onClick={() => { setUser(null); window.localStorage.removeItem('loggedBlogappUser') }}>
+              logout</Button> : <Button color="inherit" component={Link} sx={style} to="/login">login</Button>}
+            {user ? <Button color="inherit" component={Link} sx={style} to="/create">new blog</Button> : <></>}
+            <Button color="inherit" component={Link}  sx={style} to="/">blogs</Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
       <div>
         <Notification message={notification.message} type={notification.type} />
-        <Link style={padding} to="/">blogs</Link>
-        {user ? <Link style={padding} to="/create">new blog</Link> : <></>}
-        { user ? <button onClick={ () => { setUser(null); window.localStorage.removeItem('loggedBlogappUser')}}>logout</button> : <Link style={padding} to="/login">login</Link> }
       </div>
       <Routes>
         <Route path="/blogs/:id" element={
@@ -115,7 +132,7 @@ const App = () => {
         <Route path="/create" element={<BlogForm createBlog={ handleNewBlog } /> }/>
         <Route path="/" element={<BlogList blogs={ blogs } user = {user} />} />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

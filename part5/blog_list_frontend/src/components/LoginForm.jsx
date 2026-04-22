@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import Field from './Field'
 import { useNavigate } from 'react-router-dom'
+import { TextField, Button } from '@mui/material'
 
 const LoginForm = ({ handler }) => {
   const [username, setUsername] = useState([])
@@ -17,10 +17,16 @@ const LoginForm = ({ handler }) => {
   return (
     <form onSubmit={submitForm} aria-label="login form">
       <div>
-        <h1>log in to application</h1>
-        <Field name="username" value={username} onChange={({ target }) => setUsername(target.value)} />
-        <Field name="password" value={password} type="password" onChange={({ target }) => setPassword(target.value)} />
-        <button type="submit">login</button>
+        <h2>log in to application</h2>
+        <div>
+          <TextField label="username" value={username} onChange={({ target }) => setUsername(target.value)} variant="standard"/>
+        </div>
+        <div>
+          <TextField label="password" value={password} type="password" onChange={({ target }) => setPassword(target.value)} variant="standard" />
+        </div>
+        <div>
+          <Button type="submit" variant="contained" style={{ marginTop: 10 }}>login</Button>
+        </div>
       </div>
     </form>)
 }

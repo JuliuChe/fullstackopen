@@ -1,3 +1,4 @@
+import { Alert } from '@mui/material'
 
 const Notification = ({ message, type }) => {
   if (message === null) {
@@ -5,9 +6,10 @@ const Notification = ({ message, type }) => {
   }
 
   return (
-    <div className={type}>
+    <Alert sx={{ marginTop: 1, marginBottom: 1 }} severity={type} >
       {message}
-    </div>
+    </Alert>
+
   )
 }
 
