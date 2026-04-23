@@ -1,13 +1,13 @@
 import { useNotesActions } from '../store'
-
+// import noteService from '../service/notes'
 const NoteForm = () => { 
   const { add } = useNotesActions()
-  const generateId = () => (Number(Math.random() * 1000000).toFixed(0))
   
-  const addNote = (e) => { 
+  const addNote = async (e) => { 
     e.preventDefault()
     const content = e.target.note.value
-    add({ id: generateId(), content, important: false })
+    // const newNote =  await noteService.create(content)
+    await add(content) 
     e.target.reset()
   }
 
