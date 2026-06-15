@@ -1,11 +1,16 @@
-import Display from './Display'
-import Controls from './Controls'
+
+import Navbar from './Navbar'
+import Footer from './Footer'
+import Panel from './Panel'
+
 
 const App = () => {
+
   return (
     <div>
-      <Display />
-      <Controls />
+      <Navbar />
+      <Panel />
+      <Footer />
     </div>
   )
 }

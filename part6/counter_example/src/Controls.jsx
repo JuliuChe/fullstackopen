@@ -1,9 +1,8 @@
-import { useCounterControls } from './store'
+import useCounter from "./hooks/useCounter"
+
 const Controls = () => {
-  const { increment, decrement, zero } = useCounterControls()
-  // const increment = useCounterStore(state => state.increment)
-  // const decrement = useCounterStore(state => state.decrement)
-  // const zero = useCounterStore(state => state.zero)
+  const { increment, decrement, zero } = useCounter()
+
 
   return (
     <div>

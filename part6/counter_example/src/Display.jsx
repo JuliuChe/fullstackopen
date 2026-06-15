@@ -1,7 +1,7 @@
-import { useCounter } from './store'
+import useCounter from "./hooks/useCounter"
 
 const Display = () => {
-  const counter = useCounter()
+  const { counter } = useCounter()
 
   return (
     <div>{counter}</div>
