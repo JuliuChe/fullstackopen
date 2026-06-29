@@ -1,0 +1,23 @@
+{
+  "name": "blog_tests",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test --project chromium",
+    "test:report":"playwright show-report",
+    "test:debug":"npm run test --debug",
+    "test:ui":"npm run test -- --ui"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.2"
+  }
+}
