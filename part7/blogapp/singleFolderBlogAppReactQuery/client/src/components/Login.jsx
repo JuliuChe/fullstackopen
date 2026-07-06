@@ -1,29 +1,22 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+
 import { FormControl, Input, Button, InputLabel } from '@mui/material'
-import { useBlogStoreActions } from '../storeBlogs'
-import { useNotificationControls } from '../storeNotification'
 
-const Login = () => {
-  const { userLogin } = useBlogStoreActions()
-  const { launchError, launchSuccess } = useNotificationControls()
-  const navigation = useNavigate()
-
-
+const Login = ({ doLogin }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const handleLogin = async (event) => {
     event.preventDefault()
-      const loggedin  = await userLogin({ username, password })
-    if (!loggedin.isError) {
-      launchSuccess(loggedin.message)
-      navigation('/')
-    } else { 
-      launchError(loggedin.message)
-    }
+
+    try {
+      await doLogin({ username, password })
       setUsername('')
       setPassword('')
+    } catch (e) {
+      console.log(e)
+      console.log('wrong credentials')
+    }
   }
 
   return (

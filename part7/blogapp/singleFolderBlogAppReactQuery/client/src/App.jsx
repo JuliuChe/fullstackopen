@@ -1,36 +1,52 @@
 import { useEffect } from 'react'
 
-import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import {
+  Routes,
+  Route,
+  Link,
+  useMatch,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom'
 
 import { Container, AppBar, Toolbar, Button, Typography } from '@mui/material'
 
+
+
+import {useBlogs} from './hooks/useBlog'
+import useUser from './hooks/useUser'
 import BlogList from './components/BlogList'
 import Login from './components/Login'
-// import blogService from './services/blogs'
-// import loginService from './services/login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import ErrorBoundary from './components/ErrorBoundary'
 import Notification from './components/Notification'
 import NotFound from './components/NotFound'
 
-// import { useNotificationControls } from './storeNotification'
-import { useBlogStoreActions, useBlogStoreUser } from './storeBlogs'
-
 const App = () => {
-  const currentUser = useBlogStoreUser()
-  const { initializeBlogs, userLogout, initializeUser } = useBlogStoreActions()
+  const {blogs, isPending, addBlog, addLike, removeBlog} = useBlogs()
+
+  const {user, load:loadUser, login, logout} = useUser()
+
+  const location = useLocation()
   const navigation = useNavigate()
 
-  useEffect(() => {
-    initializeBlogs(),
-    initializeUser()
-  }, [])
+  useEffect(()=>{
+    loadUser()
+  },[])
+
+  const doLogin = async ({ username, password }) => {
+    const {login:userLogin}= await login({username, password})
+    if(userLogin) navigation('/')
+  }
 
   const handleLogout = async () => {
-    userLogout()
+    logout()
     navigation('/')
   }
+
+  const match = useMatch('/blogs/:id')
+  const blog = match ? blogs.find((b) => b.id === match.params.id) : null
 
   return (
     <Container>
@@ -47,7 +63,7 @@ const App = () => {
           >
             blogs
           </Button>
-          {!currentUser ? (
+          {!user ? (
             <Button
               color="inherit"
               component={Link}
@@ -82,25 +98,36 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={
+          element={isPending ? 
+            <div>Loading data...</div>:
             <ErrorBoundary>
-              <BlogList />
+              <BlogList blogs={blogs} />
             </ErrorBoundary>
           }
         />
         <Route
           path="/blogs/:id"
-          element={
-            <ErrorBoundary key={location.pathname}>
-              <Blog />
+          element={isPending ? 
+            (<div>Loading data...</div>):
+            (<ErrorBoundary key={location.pathname}>
+              {blog ? (
+                <Blog
+                  blog={blog}
+                  addLike={addLike}
+                  currentUser={user}
+                  removeBlog={removeBlog}
+                />
+              ) : (
+                <NotFound />
+              )}
             </ErrorBoundary>
-          }
+          )}
         />
         <Route
           path="/login"
           element={
             <ErrorBoundary key={location.pathname}>
-              <Login />
+              <Login doLogin={doLogin} />
             </ErrorBoundary>
           }
         />
@@ -108,11 +135,11 @@ const App = () => {
           path="/create"
           element={
             <ErrorBoundary key={location.pathname}>
-              <BlogForm />
+              <BlogForm createBlog={addBlog} />
             </ErrorBoundary>
           }
         />
-        <Route path="/*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Container>
   )

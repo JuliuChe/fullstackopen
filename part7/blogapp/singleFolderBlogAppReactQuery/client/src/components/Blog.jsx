@@ -12,40 +12,23 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material'
-import { useParams } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
 
-import NotFound from './NotFound'
-
-import { useNotificationControls } from '../storeNotification'
-
-import { useBlogStoreBlogs, useBlogStoreUser, useBlogStoreActions } from '../storeBlogs'
-
-const Blog = () => {
-  const { id } = useParams()
+const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const { removeBlog, addLike } = useBlogStoreActions()
-  const blogs = useBlogStoreBlogs()
-  const currentUser = useBlogStoreUser()
-  const { launchError, launchSuccess } = useNotificationControls()
-  const navigation = useNavigate()
 
-  const blog = blogs.find((b) => b.id === id)
   if (!blog) {
-    return <NotFound />
+    throw new Error('No blog found')
   }
 
   const canBeRemoved = () =>
     currentUser && currentUser.username === blog.user.username
 
+  // const currentUserValid = () =>{
+
+  // }
+
   const handleRemove = () => {
-    const removed = removeBlog(blog)
-    if (removed.isError) {
-      launchError(removed.message)
-    } else {
-      launchSuccess(removed.message)
-      navigation('/')
-    }
+    removeBlog(blog)
     setConfirmOpen(false)
   }
 

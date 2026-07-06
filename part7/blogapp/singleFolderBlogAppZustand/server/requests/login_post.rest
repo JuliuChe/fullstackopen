@@ -1,0 +1,19 @@
+
+###
+post http://localhost:3003/api/login/ HTTP/1.1
+content-type: application/json
+
+{
+  "username":"oizo",
+  "password":"cuiCui"
+}
+
+
+###
+post http://localhost:3003/api/login/ HTTP/1.1
+content-type: application/json
+
+{
+  "username":"jDore",
+  "password":"jadore"
+}

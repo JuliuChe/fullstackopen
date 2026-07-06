@@ -2,27 +2,14 @@ import { useState } from 'react'
 
 import { TextField, Button, Stack } from '@mui/material'
 
-import { useNotificationControls } from '../storeNotification'
-
-import { useBlogStoreActions} from '../storeBlogs'
-
-import { useNavigate } from 'react-router-dom'
-
-const BlogForm = () => {
+const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-  const { addBlog } = useBlogStoreActions()
-  const { launchError, launchSuccess } = useNotificationControls()
-  const navigation = useNavigate()
-  const handleCreateNew = async (event) => {
+
+  const handleCreateNew = (event) => {
     event.preventDefault()
-    const created = await addBlog({ title, author, url })
-    if (created.isError) { launchError(created.message) }
-    else {
-      launchSuccess(created.message)
-      navigation('/')
-     }
+    createBlog({ title, author, url })
     setTitle('')
     setAuthor('')
     setUrl('')
