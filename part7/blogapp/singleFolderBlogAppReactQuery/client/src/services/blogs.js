@@ -4,13 +4,12 @@ const baseUrl = '/api/blogs'
 let token = null
 
 const setToken = (newToken) => {
-  token = `Bearer ${newToken}`
+  token = newToken ? `Bearer ${newToken}` : null
 }
 
 const getConfig = () => ({ headers: { Authorization: token } })
 
 const getAll = () => {
-  
   const request = axios.get(baseUrl)
   return request.then((response) => response.data)
 }

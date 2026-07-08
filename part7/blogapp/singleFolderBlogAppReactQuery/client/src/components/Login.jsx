@@ -1,22 +1,17 @@
-import { useState } from 'react'
+import useField from '../hooks/useField'
 
 import { FormControl, Input, Button, InputLabel } from '@mui/material'
 
 const Login = ({ doLogin }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const username = useField('text')
+  const password = useField('password')
+
 
   const handleLogin = async (event) => {
     event.preventDefault()
-
-    try {
-      await doLogin({ username, password })
-      setUsername('')
-      setPassword('')
-    } catch (e) {
-      console.log(e)
-      console.log('wrong credentials')
-    }
+      await doLogin({ username:username.inputProps.value, password:password.inputProps.value })
+      username.reset()
+      password.reset()
   }
 
   return (
@@ -27,8 +22,7 @@ const Login = ({ doLogin }) => {
           <FormControl>
             <InputLabel>username</InputLabel>
             <Input
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
+              {...username.inputProps}
             />
           </FormControl>
         </div>
@@ -36,9 +30,7 @@ const Login = ({ doLogin }) => {
           <FormControl>
             <InputLabel>password</InputLabel>
             <Input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
+              {...password.inputProps}
             />
           </FormControl>
         </div>

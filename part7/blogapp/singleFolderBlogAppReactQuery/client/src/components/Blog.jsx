@@ -11,10 +11,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  TextField,
 } from '@mui/material'
 
-const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
+import useField from '../hooks/useField'
+
+const Blog = ({ blog, addLike, currentUser, removeBlog, addComment }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const comment = useField('text')
 
   if (!blog) {
     throw new Error('No blog found')
@@ -22,10 +26,6 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
 
   const canBeRemoved = () =>
     currentUser && currentUser.username === blog.user.username
-
-  // const currentUserValid = () =>{
-
-  // }
 
   const handleRemove = () => {
     removeBlog(blog)
@@ -77,6 +77,41 @@ const Blog = ({ blog, addLike, currentUser, removeBlog }) => {
               remove
             </Button>
           )}
+        </Box>
+
+        <Typography sx={{ my: 2 }} variant="h6" gutterBottom>
+          comments
+        </Typography>
+        {currentUser && (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <TextField
+              size="small"
+              id="comment-field"
+              label="add a comment"
+              {...comment.inputProps}
+            />
+            <Button
+              variant="contained"
+              onClick={() => {
+                addComment({ blog, comment:comment.inputProps.value })
+                comment.reset()
+              }}
+            >
+              add comment
+            </Button>
+          </Box>
+        )}
+        <Box component="ul" sx={{ m: 0, pl: 2, py: 2 }}>
+          {blog.comments?.map((val, i) => (
+            <Typography
+              key={i}
+              variant="body2"
+              sx={{ m: 0, listStylePosition: 'inside', pl: 3 }}
+              component="li"
+            >
+              {val}
+            </Typography>
+          ))}
         </Box>
       </CardContent>
 

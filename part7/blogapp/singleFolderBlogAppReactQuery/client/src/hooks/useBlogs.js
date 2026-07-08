@@ -58,7 +58,8 @@ export const useBlogs = () => {
     blogs:result.data ?? [],
     isPending:result.isPending,
     addBlog: (newBlog) => newBlogMutation.mutate(newBlog),
-    addLike: (blog) => updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1, user: blog.user.id }),
+    addLike: (blog) => updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 }),
+    addComment: ({blog, comment}) => updateBlogMutation.mutate({...blog, comments:[...(blog.comments ?? []), comment]}),
     removeBlog: (blog) => removeBlogMutation.mutate(blog)
   }
 }

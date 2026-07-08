@@ -10,6 +10,6 @@ const saveUser = (user) =>{
   window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
 }
 
-
+export { getUser, saveUser, removeUser }
 
 export default {getUser, saveUser, removeUser}

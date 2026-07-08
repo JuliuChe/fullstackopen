@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import {
   Routes,
   Route,
@@ -13,27 +11,26 @@ import { Container, AppBar, Toolbar, Button, Typography } from '@mui/material'
 
 
 
-import {useBlogs} from './hooks/useBlog'
+import {useBlogs} from './hooks/useBlogs'
 import useUser from './hooks/useUser'
 import BlogList from './components/BlogList'
 import Login from './components/Login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import UsersList from './components/UsersList'
+import User from './components/User'
 import ErrorBoundary from './components/ErrorBoundary'
 import Notification from './components/Notification'
 import NotFound from './components/NotFound'
 
 const App = () => {
-  const {blogs, isPending, addBlog, addLike, removeBlog} = useBlogs()
+  const {blogs, isPending, addBlog, addLike, addComment, removeBlog} = useBlogs()
 
-  const {user, load:loadUser, login, logout} = useUser()
+  const {user, login, logout} = useUser()
 
   const location = useLocation()
   const navigation = useNavigate()
 
-  useEffect(()=>{
-    loadUser()
-  },[])
 
   const doLogin = async ({ username, password }) => {
     const {login:userLogin}= await login({username, password})
@@ -77,6 +74,14 @@ const App = () => {
               <Button
                 color="inherit"
                 component={Link}
+                to="/users"
+                sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
+              >
+                users
+              </Button>
+              <Button
+                color="inherit"
+                component={Link}
                 to="/create"
                 sx={{ '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
               >
@@ -116,6 +121,7 @@ const App = () => {
                   addLike={addLike}
                   currentUser={user}
                   removeBlog={removeBlog}
+                  addComment={addComment}
                 />
               ) : (
                 <NotFound />
@@ -136,6 +142,22 @@ const App = () => {
           element={
             <ErrorBoundary key={location.pathname}>
               <BlogForm createBlog={addBlog} />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ErrorBoundary key={location.pathname}>
+              <UsersList />
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/users/:id"
+          element={
+            <ErrorBoundary key={location.pathname}>
+              <User />
             </ErrorBoundary>
           }
         />

@@ -9,7 +9,11 @@ const UserContext = createContext()
 
 
 export const UserContextProvider = (props) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(() => {
+    const storedUser = persistentUser.getUser()
+    if (storedUser) blogService.setToken(storedUser.token)
+    return storedUser ?? null
+  })
   const notify  = useNotify()
 
 
@@ -38,13 +42,8 @@ export const UserContextProvider = (props) => {
     changeUser(null)
   }
 
-  const load = () =>{
-    const user = persistentUser.getUser()
-    if (user) changeUser(user)
-  }
-
   return (
-    <UserContext.Provider value={{user, load, logout, login}}>
+    <UserContext.Provider value={{user, logout, login}}>
       {props.children}
     </UserContext.Provider>
   )
