@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 
-const connectToDatabase= require('.db')
+const connectToDatabase= require('./db')
 const startServer = require('./server')
 
 const MONGODB_URI = process.env.MONGODB_URI

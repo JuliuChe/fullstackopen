@@ -6,18 +6,21 @@ const UpdateAuthor = (props) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
-
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
-    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }] //refetch queries is a way to update the CACHE
+    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }], //refetch queries is a way to update the CACHE
   })
 
   const result = useQuery(ALL_AUTHORS)
 
+  if(result.loading){
+    return
+  }
+
   const authors = result.data.allAuthors
   console.log(authors)
-    //   onError: (error) => {
-    //   setError(error.message)
-    // },
+  //   onError: (error) => {
+  //   setError(error.message)
+  // },
   if (!props.show) {
     return null
   }
@@ -25,12 +28,11 @@ const UpdateAuthor = (props) => {
     event.preventDefault()
 
     console.log('update author...')
-    updateAuthor({ variables: { name, setBornTo:born } })
+    updateAuthor({ variables: { name, setBornTo: born } })
 
     setName('')
     setBorn('')
   }
-
 
   return (
     <div>
@@ -38,8 +40,15 @@ const UpdateAuthor = (props) => {
         <div>
           <label>
             name:
-            <select name="AuthorSelected" onChange={({target})=>setName(target.value)}>
-              {authors.map( (a) => (<option key={a.name} value={a.name}>{a.name}</option>))}
+            <select
+              name="AuthorSelected"
+              onChange={({ target }) => setName(target.value)}
+            >
+              {authors.map((a) => (
+                <option key={a.name} value={a.name}>
+                  {a.name}
+                </option>
+              ))}
             </select>
           </label>
           {/* <input

@@ -4,6 +4,17 @@ const { startStandaloneServer } = require('@apollo/server/standalone')
 const resolvers = require('./resolvers')
 const typeDefs = require('./schema')
 
+
+const getUserFromAuthHeader = async(auth) =>{
+  if(!auth || !auth.startsWith('Bearer')){
+    return null
+  }
+
+  const decodedToken = jwt.verify(auth.substring('Bearer '.length), process.env.JWT_SECRET)
+  return User.findById(decodedToken.id).populate('friends')
+}
+
+
 const startServer = (port) =>{
 
   const server = new ApolloServer({
@@ -13,6 +24,11 @@ const startServer = (port) =>{
 
   startStandaloneServer(server, {
     listen: { port },
+    context: async({req}) =>{
+      const auth = req.headers.authorization
+      const currentUser = getUserFromAuthHeader(auth)
+      return {currentUser}
+    }
   }).then(({ url }) => {
     console.log(`Server ready at ${url}`)
   })
