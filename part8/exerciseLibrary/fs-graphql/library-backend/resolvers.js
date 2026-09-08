@@ -20,8 +20,9 @@ const resolvers = {
         return await Book.find({}).populate('author')
       let filtBooks = await Book.find({}).populate('author')
       console.log(filtBooks)
+      
       if (args.genre) {
-        filtBooks = filtBooks.filter((book) => book.genres.includes(args.genre))
+        filtBooks = await Book.find({genres: args.genre}).populate('author')
       }
 
       if (args.author) {
