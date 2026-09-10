@@ -7,7 +7,7 @@ require('dotenv').config()
 const resolvers = {
   Book: {
     author: (root) => root.author.name,
-    id: (root) => root._id.toString()
+    id: (root) => root._id.toString(),
   },
   Author: {
     id: (root) => root._id.toString(),
@@ -20,9 +20,9 @@ const resolvers = {
         return await Book.find({}).populate('author')
       let filtBooks = await Book.find({}).populate('author')
       console.log(filtBooks)
-      
+
       if (args.genre) {
-        filtBooks = await Book.find({genres: args.genre}).populate('author')
+        filtBooks = await Book.find({ genres: args.genre }).populate('author')
       }
 
       if (args.author) {
@@ -37,7 +37,9 @@ const resolvers = {
         }
         filtBooks = filtBooks.filter((book) => book.author.name === args.author)
       }
-      return filtBooks.map( (book) => {return {...book.toObject()}})
+      return filtBooks.map((book) => {
+        return { ...book.toObject() }
+      })
     },
     allAuthors: async () => {
       const authors = await Author.find({})
@@ -63,17 +65,58 @@ const resolvers = {
         })
       }
       const author = await Author.findOne({ name: args.author })
+
       const newAuthor = new Author({ name: args.author })
+
       if (!author) {
-        await newAuthor.save()
-        console.log(newAuthor)
+        try {
+          console.log('Just after newAuthor')
+          await newAuthor.save()
+        } catch (err) {
+          if (err.name === 'ValidationError') {
+            throw new GraphQLError(
+              'Author name has invalid value : min length is 4',
+              {
+                extensions: {
+                  code: 'BAD_USER_INPUT',
+                  invalideArgs: Object.keys(err.errors),
+                },
+              },
+            )
+            throw new GraphQLError('Internal error', {
+              extensions: {
+                code: 'INTERNAL_SERVER_ERROR',
+              },
+            })
+          }
+        }
       }
 
       const newBook = new Book({
         ...args,
         author: author ? author : newAuthor,
       })
-      await newBook.save()
+      try {
+        await newBook.save()
+      } catch (err) {
+        if (err.name === 'ValidationError') {
+          throw new GraphQLError(
+            'Title is required and has invalid value : min length is 5',
+            {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalideArgs: Object.keys(err.errors),
+              },
+            },
+          )
+        }
+        throw new GraphQLError('Internal error', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+          },
+        })
+      }
+
       return newBook.populate('author')
     },
     editAuthor: async (root, args) => {

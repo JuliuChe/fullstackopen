@@ -12,12 +12,11 @@ const UpdateAuthor = (props) => {
 
   const result = useQuery(ALL_AUTHORS)
 
-  if(result.loading){
+  if (result.loading) {
     return
   }
 
   const authors = result.data.allAuthors
-  console.log(authors)
   //   onError: (error) => {
   //   setError(error.message)
   // },
