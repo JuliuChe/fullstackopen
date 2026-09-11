@@ -14,11 +14,23 @@ const typeDefs = /* GraphQL */ `
     id: ID!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    # friends:[User!]!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -29,6 +41,15 @@ const typeDefs = /* GraphQL */ `
       genres: [String]!
     ): Book
     editAuthor(name: String!, setBornTo: Int): Author
+    createUser(
+      username: String!
+      favoriteGenre: String!
+      # friends:[ID]
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
