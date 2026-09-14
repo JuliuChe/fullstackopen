@@ -171,7 +171,7 @@ const resolvers = {
       const user = await User.findOne({ username: args.username })
       if (!user || args.password != 'secret') {
         console.log(allUsers)
-        throw new GraphQLError('Wrong credentialsBad username or password', {
+        throw new GraphQLError('Wrong credentials: Bad username or password', {
           extensions: {
             code: 'BAD_USER_INPUT',
             invalidArgs: args.username

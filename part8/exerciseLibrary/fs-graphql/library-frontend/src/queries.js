@@ -15,7 +15,9 @@ export const ALL_BOOKS = gql`
   query {
     allBooks {
       title
-      author
+      author{
+        name
+      }
       published
       id
     }
@@ -55,6 +57,20 @@ mutation updateAuthor(
     id
     born
     name
+    
+  }
+}`
+
+export const LOGIN = gql`
+mutation login(
+  $username: String!, 
+  $password: Int!
+  ) {
+    login(
+      username: $username, 
+      password: $password
+    ) {
+    value
     
   }
 }`
