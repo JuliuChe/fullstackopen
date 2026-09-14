@@ -9,16 +9,25 @@ const PersonForm = ({ setError }) => {
   const [phone, setPhone] = useState('')
 
   const [createPerson] = useMutation(CREATE_PERSON, {
-    refetchQueries: [{ query: ALL_PERSONS }], //refetch queries is a way to update the CACHE
+    // refetchQueries: [{ query: ALL_PERSONS }], //refetch queries is a way to update the CACHE
     onError: (error) => {
       setError(error.message)
+    },
+    update: (cache, response) => { 
+      cache.updateQuery({ query: ALL_PERSONS }, ({allPersons}) => {
+        return {
+          allPersons:allPersons.concat(response.data.addPerson),
+        }
+      })
     },
   })
 
   const submit = (event) => {
     event.preventDefault()
 
-    createPerson({ variables: { name, street, city, phone } })
+    createPerson({
+      variables: { name, street, city, phone: phone.length>0 ? phone : undefined },
+    })
 
     setName('')
     setStreet('')
