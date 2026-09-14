@@ -12,22 +12,21 @@ const UpdateAuthor = (props) => {
 
   const result = useQuery(ALL_AUTHORS)
 
+  const authors = result.data?.allAuthors ?? []
+
+  const selectedName = name || authors[0]?.name || ''
+    
   if (result.loading) {
     return
   }
 
-  const authors = result.data.allAuthors
-  //   onError: (error) => {
-  //   setError(error.message)
-  // },
   if (!props.show) {
     return null
   }
   const submit = async (event) => {
     event.preventDefault()
-
     console.log('update author...')
-    updateAuthor({ variables: { name, setBornTo: born } })
+    updateAuthor({ variables: { name:selectedName, setBornTo: born } })
 
     setName('')
     setBorn('')
@@ -40,8 +39,8 @@ const UpdateAuthor = (props) => {
           <label>
             name:
             <select
-              name="AuthorSelected"
-              onChange={({ target }) => setName(target.value)}
+              value={selectedName}
+              onChange={({target}) => setName(target.value)}
             >
               {authors.map((a) => (
                 <option key={a.name} value={a.name}>

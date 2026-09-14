@@ -38,7 +38,7 @@ const typeDefs = /* GraphQL */ `
       title: String!
       author: String!
       published: Int
-      genres: [String!]!
+      genres: [String]!
     ): Book
     editAuthor(name: String!, setBornTo: Int): Author
     createUser(

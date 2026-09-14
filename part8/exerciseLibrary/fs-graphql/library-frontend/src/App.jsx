@@ -3,9 +3,38 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import UpdateAuthor from './components/UpdateAuthor'
+import LoginForm from './components/LoginForm'
+import { useApolloClient } from '@apollo/client/react'
 
 const App = () => {
   const [page, setPage] = useState('authors')
+  const [token, setToken]= useState(localStorage.getItem('library-user-token'))
+  const client = useApolloClient()
+
+  const onSetToken = (token) => {
+    setToken(token)
+    setPage('authors')
+  }
+  const onLogout = () => {
+    onSetToken(null)
+    localStorage.removeItem('library-user-token')
+    client.resetStore()
+  }
+
+  if(!token) {
+    return (
+    <div>
+      <div>
+        <button onClick={() => setPage('authors')}>authors</button>
+        <button onClick={() => setPage('books')}>books</button>
+        <button onClick={() => setPage('login')}>login</button>
+      </div>
+      <Authors show={page === 'authors'} />
+      <Books show={page === 'books'} />
+      <LoginForm show={page === 'login'} setToken={onSetToken}/>
+    </div>
+    )
+  }
   return (
     <div>
       <div>
@@ -13,12 +42,12 @@ const App = () => {
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
         <button onClick={() => setPage('update author')}>update author</button>
+        <button onClick={onLogout}>logout</button>
       </div>
 
       <Authors show={page === 'authors'} />
 
       <Books show={page === 'books'} />
-
       <NewBook show={page === 'add'} />
 
       <UpdateAuthor show={page === 'update author'} />
