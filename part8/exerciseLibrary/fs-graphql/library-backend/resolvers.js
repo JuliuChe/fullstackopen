@@ -8,10 +8,10 @@ const User = require('./models/user')
 require('dotenv').config()
 
 const resolvers = {
-  // Book: {
+  Book: {
   //   author: (root) => root.author.name,
-  //   id: (root) => root._id.toString(),
-  // },
+    id: (root) => root._id.toString(),
+  },
   Author: {
     id: (root) => root._id.toString(),
   },
@@ -24,14 +24,17 @@ const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    allBooks: async (root, args) => {
-      if (!args.author && !args.genre)
+    allBooks: async (root, args) => { 
+      console.log(`genres: ${args?.genres}`)
+      if (!args.author && !args.genres)
         return await Book.find({}).populate('author')
       let filtBooks = await Book.find({}).populate('author')
-      console.log(filtBooks)
 
-      if (args.genre) {
-        filtBooks = await Book.find({ genres: args.genre }).populate('author')
+      if (args.genres) {
+        filtBooks = await Book.find({ genres: { $in: args.genres } }).populate(
+          'author',
+        )
+        console.log('filtered books')
       }
 
       if (args.author) {
@@ -67,7 +70,7 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, context) => {
       const currentUser = context.currentUser
-      console.log("In ADDbook  resolver")
+      console.log('In ADDbook  resolver')
       if (!currentUser) {
         console.log(currentUser)
         throw new GraphQLError('Not authenticated', {
@@ -174,7 +177,7 @@ const resolvers = {
         throw new GraphQLError('Wrong credentials: Bad username or password', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.username
+            invalidArgs: args.username,
           },
         })
       }

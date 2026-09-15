@@ -1,9 +1,10 @@
-import { ME, ALL_BOOKS } from '../queries'
+import { ME, FILTERED_BOOKS } from '../queries'
 import { useQuery } from '@apollo/client/react'
 const Recommend = (props) => {
   const result = useQuery(ME)
-  const booksResult = useQuery(ALL_BOOKS, {
+  const booksResult = useQuery(FILTERED_BOOKS, {
     fetchPolicy: 'cache-first',
+    variables: !result.loading ? {genres:[result.data.me.favoriteGenre]}:{genres:undefined},
   })
 
   if (!props.show) {
@@ -16,9 +17,10 @@ const Recommend = (props) => {
 
   const userFavoriteGenre = result.data.me.favoriteGenre
   const books = booksResult.data.allBooks
-  const filteredBooks = books.filter((book) => {
-    return book.genres.includes(userFavoriteGenre)
-  })
+  const filteredBooks=books
+  // const filteredBooks = books.filter((book) => {
+  //   return book.genres.includes(userFavoriteGenre)
+  // })
   return (
     <div>
       <h2>recommendations</h2>
