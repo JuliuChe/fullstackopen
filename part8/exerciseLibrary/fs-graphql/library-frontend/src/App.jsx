@@ -4,11 +4,12 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import UpdateAuthor from './components/UpdateAuthor'
 import LoginForm from './components/LoginForm'
+import Recommend from './components/Recommend'
 import { useApolloClient } from '@apollo/client/react'
 
 const App = () => {
   const [page, setPage] = useState('authors')
-  const [token, setToken]= useState(localStorage.getItem('library-user-token'))
+  const [token, setToken] = useState(localStorage.getItem('library-user-token'))
   const client = useApolloClient()
 
   const onSetToken = (token) => {
@@ -21,18 +22,18 @@ const App = () => {
     client.resetStore()
   }
 
-  if(!token) {
+  if (!token) {
     return (
-    <div>
       <div>
-        <button onClick={() => setPage('authors')}>authors</button>
-        <button onClick={() => setPage('books')}>books</button>
-        <button onClick={() => setPage('login')}>login</button>
+        <div>
+          <button onClick={() => setPage('authors')}>authors</button>
+          <button onClick={() => setPage('books')}>books</button>
+          <button onClick={() => setPage('login')}>login</button>
+        </div>
+        <Authors show={page === 'authors'} />
+        <Books show={page === 'books'} />
+        <LoginForm show={page === 'login'} setToken={onSetToken} />
       </div>
-      <Authors show={page === 'authors'} />
-      <Books show={page === 'books'} />
-      <LoginForm show={page === 'login'} setToken={onSetToken}/>
-    </div>
     )
   }
   return (
@@ -42,6 +43,7 @@ const App = () => {
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
         <button onClick={() => setPage('update author')}>update author</button>
+        <button onClick={() => setPage('recommendations')}>recommend</button>
         <button onClick={onLogout}>logout</button>
       </div>
 
@@ -51,6 +53,8 @@ const App = () => {
       <NewBook show={page === 'add'} />
 
       <UpdateAuthor show={page === 'update author'} />
+
+      <Recommend show={page === 'recommendations'} />
     </div>
   )
 }

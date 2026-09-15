@@ -23,7 +23,6 @@ const Books = (props) => {
 
   const books = result.data.allBooks
   const genres = [...new Set(books.flatMap((b) => b.genres)), 'all genres']
-  console.log(selectedGenres)
 
   const filteredBooks =
     selectedGenres.length === 0 || selectedGenres.includes('all genres')
