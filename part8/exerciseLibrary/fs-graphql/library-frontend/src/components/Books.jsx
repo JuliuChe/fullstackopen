@@ -1,14 +1,16 @@
 import { FILTERED_BOOKS } from '../queries'
 import { useQuery } from '@apollo/client/react'
-import { useState } from 'react'
 
-const Books = (props) => {
-  const [selectedGenres, setGenreSelection] = useState([])
+
+const Books = ({show, selectedGenres, setGenreSelection}) => {
+
   const result = useQuery(FILTERED_BOOKS, {
     variables:
-      selectedGenres.length > 0 && !selectedGenres.includes("all genres")? { genres: selectedGenres }:{genres:undefined} ,
+      selectedGenres.length > 0 && !selectedGenres.includes("all genres")? { genres: selectedGenres }:{genres:undefined},
+    fetchPolicy:'cache-and-network',
   })
-  if (!props.show) {
+
+  if (!show) {
     return null
   }
   if (result.loading) {

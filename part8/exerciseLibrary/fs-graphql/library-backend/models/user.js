@@ -10,7 +10,9 @@ const schema = new mongoose.Schema({
   favoriteGenre: {
     type:String,
     required:true,
-    minLength:4
+    minLength:4,
+    lowercase:true,
+    trim:true
   },
   // friends: [{ type: mongoose.Schema.Types.ObjectId,
   //   ref: 'User'

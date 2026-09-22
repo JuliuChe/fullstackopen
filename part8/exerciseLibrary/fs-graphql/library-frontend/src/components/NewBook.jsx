@@ -1,23 +1,56 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client/react'
-import { CREATE_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
+import { CREATE_BOOK, ALL_AUTHORS, FILTERED_BOOKS } from '../queries'
 
-const NewBook = (props) => {
+const NewBook = ({show, selectedGenres}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
-
-
-
+  const variables = {genres:selectedGenres}
   const [createBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }] //refetch queries is a way to update the CACHE
+    update: (cache, {data}) => {
+      const newBook = data?.addBook
+  
+      if (!newBook){
+        return
+      }
+
+      const matchesFilter = selectedGenres.length === 0 ||
+      newBook.genres?.some(genre => selectedGenres.includes(genre))
+
+      if(!matchesFilter){
+        return
+      }
+      cache.updateQuery({ 
+        query: FILTERED_BOOKS,
+        variables,  
+      }, cachedQueryResult => {
+        if(!cachedQueryResult) {
+          return cachedQueryResult
+        }
+
+        const books = cachedQueryResult.allBooks
+        const bookAlreadyExist = books.some(book => book.id === newBook.id)
+
+        if(bookAlreadyExist){
+          return cachedQueryResult
+        }
+
+      return {
+        ...cachedQueryResult,
+          allBooks:books.concat(newBook),
+        }
+      })
+    },
+    refetchQueries: [{ query: ALL_AUTHORS }], //refetch queries is a way to update the CACHE
+    awaitRefetchQueries:true,
   })
-    //   onError: (error) => {
-    //   setError(error.message)
-    // },
-  if (!props.show) {
+  //   onError: (error) => {
+  //   setError(error.message)
+  // },
+  if (!show) {
     return null
   }
   const submit = async (event) => {

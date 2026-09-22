@@ -25,7 +25,7 @@ export const ALL_BOOKS = gql`
 }`
 
 export const FILTERED_BOOKS = gql`
-  query filtBooks($genres:[String]){
+  query filtBooks($genres:[String!]){
     allBooks(genres: $genres) {
       title
       author{

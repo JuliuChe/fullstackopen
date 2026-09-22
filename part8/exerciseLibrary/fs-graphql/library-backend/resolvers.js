@@ -25,16 +25,16 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: async (root, args) => { 
-      console.log(`genres: ${args?.genres}`)
+      // console.log(`genres: ${args?.genres}`)
       if (!args.author && !args.genres)
         return await Book.find({}).populate('author')
       let filtBooks = await Book.find({}).populate('author')
 
       if (args.genres) {
-        filtBooks = await Book.find({ genres: { $in: args.genres } }).populate(
+        filtBooks = await Book.find({ genres: { $in: args.genres} }).populate(
           'author',
         )
-        console.log('filtered books')
+        // console.log('filtered books')
       }
 
       if (args.author) {

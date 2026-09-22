@@ -22,6 +22,8 @@ const App = () => {
     client.resetStore()
   }
 
+  const [selectedGenres, setGenreSelection] = useState([])
+
   if (!token) {
     return (
       <div>
@@ -31,7 +33,7 @@ const App = () => {
           <button onClick={() => setPage('login')}>login</button>
         </div>
         <Authors show={page === 'authors'} />
-        <Books show={page === 'books'} />
+        <Books show={page === 'books'} selectedGenres={selectedGenres} setGenreSelection={setGenreSelection} />
         <LoginForm show={page === 'login'} setToken={onSetToken} />
       </div>
     )
@@ -49,8 +51,8 @@ const App = () => {
 
       <Authors show={page === 'authors'} />
 
-      <Books show={page === 'books'} />
-      <NewBook show={page === 'add'} />
+      <Books show={page === 'books'} selectedGenres={selectedGenres} setGenreSelection={setGenreSelection} />
+      <NewBook show={page === 'add'} selectedGenres={selectedGenres}  />
 
       <UpdateAuthor show={page === 'update author'} />
 
